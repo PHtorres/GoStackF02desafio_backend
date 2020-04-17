@@ -31,9 +31,9 @@ function validateProjectId(request, response, next){
 
 app.use(logRequests);
 
-app.use('/projects/:id', validateProjectId);
+app.use('/repositories/:id', validateProjectId);
 
-app.get('/projects', (request, response) => {
+app.get('/repositories', (request, response) => {
     const {title} = request.query;
     const result = title?projects.filter(p => p.title.includes(title)):projects;
     const resultWithLikes = result.map(p=>{
@@ -43,7 +43,7 @@ app.get('/projects', (request, response) => {
     return response.json(resultWithLikes);
 });
 
-app.post('/projects', (request, response) => {
+app.post('/repositories', (request, response) => {
     const { title, url, techs, likes } = request.body;
     const newId = uuid();
  
@@ -59,7 +59,7 @@ app.post('/projects', (request, response) => {
     return response.json(project);
 });
 
-app.put('/projects/:id', (request, response) => {
+app.put('/repositories/:id', (request, response) => {
     const {id} = request.params;
     const { title, url, techs } = request.body;
     const projectIndex = projects.findIndex(p => p.id === id);
@@ -80,7 +80,7 @@ app.put('/projects/:id', (request, response) => {
     return response.json(project);
 });
 
-app.delete('/projects/:id', (request, response) => {
+app.delete('/repositories/:id', (request, response) => {
     const {id} = request.params;
     const projectIndex = projects.findIndex(p => p.id === id);
 
@@ -93,7 +93,7 @@ app.delete('/projects/:id', (request, response) => {
     return response.status(204).send();
 });
 
-app.post('/projects/:id/like', validateProjectId, (request, response) => {
+app.post('/repositories/:id/like', validateProjectId, (request, response) => {
     const {id} = request.params;
 
     const like = {

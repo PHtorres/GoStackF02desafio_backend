@@ -2,9 +2,9 @@ const request = require('supertest');
 const {isUuid} = require('uuidv4');
 const app = require('../../src/app');
 
-describe('PROJECT', ()=>{
+describe('REPOSITORY', ()=>{
     it('should be able to create a new repository', async ()=>{
-        const response = await request(app).post('/projects').send({
+        const response = await request(app).post('/repositories').send({
             title: "GoBolão", 
             url: "http://github.com/phtorres/appgobolao", 
             techs: [".Net Core", "React Native"]
@@ -19,16 +19,16 @@ describe('PROJECT', ()=>{
           });
     });
 
-    it("should be able to list the projects", async () => {
+    it("should be able to list the repositories", async () => {
         const repository = await request(app)
-          .post("/projects")
+          .post("/repositories")
           .send({
             title: "GoBolão", 
             url: "http://github.com/phtorres/appgobolao", 
             techs: [".Net Core", "React Native"]
           });
     
-        const response = await request(app).get("/projects");
+        const response = await request(app).get("/repositories");
     
         expect(response.body).toEqual(
           expect.arrayContaining([
@@ -46,7 +46,7 @@ describe('PROJECT', ()=>{
 
       it("should be able to update repository", async () => {
         const repository = await request(app)
-          .post("/projects")
+          .post("/repositories")
           .send({
             title: "GoBolão", 
             url: "http://github.com/phtorres/appgobolao", 
@@ -54,7 +54,7 @@ describe('PROJECT', ()=>{
           });
     
         const response = await request(app)
-          .put(`/projects/${repository.body.id}`)
+          .put(`/repositories/${repository.body.id}`)
           .send({
             title: "GoBolão", 
             url: "http://github.com/phtorres/appgobolao", 
@@ -72,20 +72,20 @@ describe('PROJECT', ()=>{
 
       it("should not be able to update a repository that does not exist", async () => {
         await request(app)
-          .put(`/projects/123`)
+          .put(`/repositories/123`)
           .expect(400);
       });
 
       it("should not be able to update repository likes manually", async () => {
         const repository = await request(app)
-          .post("/projects")
+          .post("/repositories")
           .send({
             title: "GoBolão", 
             url: "http://github.com/phtorres/appgobolao", 
             techs: [".Net Core", "React Native"]
           });
     
-        const response = await request(app).post(`/projects/${repository.body.id}/like`);
+        const response = await request(app).post(`/repositories/${repository.body.id}/like`);
     
         expect(response.body).toMatchObject({
           id: response.body.id,
@@ -97,7 +97,7 @@ describe('PROJECT', ()=>{
 
       it("should be able to delete the repository", async () => {
         const response = await request(app)
-          .post("/projects")
+          .post("/repositories")
           .send({
             title: "GoBolão", 
             url: "http://github.com/phtorres/appgobolao", 
@@ -105,10 +105,10 @@ describe('PROJECT', ()=>{
           });
     
         await request(app)
-          .delete(`/projects/${response.body.id}`)
+          .delete(`/repositories/${response.body.id}`)
           .expect(204);
     
-        const repositories = await request(app).get("/projects");
+        const repositories = await request(app).get("/repositories");
     
         const repository = repositories.body.find(r => r.id === response.body.id);
     
@@ -117,7 +117,7 @@ describe('PROJECT', ()=>{
     
       it("should not be able to delete a repository that does not exist", async () => {
         await request(app)
-          .delete(`/projects/123`)
+          .delete(`/repositories/123`)
           .expect(400);
       });
 });
